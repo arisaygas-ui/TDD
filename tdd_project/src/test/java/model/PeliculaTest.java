@@ -1,12 +1,12 @@
 package model;
-import exception.duracionNegativaException;
+import exception.*;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PeliculaTest {
 
+    //caso valido
     @Test
-        //camino feliz
     void peliculaConTodosLosArgumentos() {
         //Arrange + Act
         Pelicula peli = Pelicula.newPelicula("El rey Leon",
@@ -27,11 +27,10 @@ public class PeliculaTest {
 
 
 
-    //camino intermedio
+    //caso valido
     @Test
-    void peliculaConAtributosObligatorios() {
-        //Arrange + Act
-        Pelicula peli = new Pelicula("El rey Leon", "Autor", 120, "20:30", 3, "descripcion");
+    void peliculaSinDescripcion() {
+        Pelicula peli = Pelicula.newPelicula("El rey Leon", "Autor", 120, "20:30", 3, "");
 
 
         //Assert
@@ -40,17 +39,43 @@ public class PeliculaTest {
         assertEquals(120, peli.getDuracion());
         assertEquals("20:30", peli.getHorario());
         assertEquals(3, peli.getSala());
-        assertEquals("descripcion", peli.getDescripcion());
+        assertEquals("", peli.getDescripcion());
     }
 
-    ;
 
-    //camino triste
+    //casos invalidos
+    @Test
+    void peliculaConNombreVacio() {
+        assertThrows(nombreNoValidoException.class, () -> {
+            Pelicula.newPelicula("","Autor",120,"20:30", 3, "descripcion");
+        });
+    }
+
+    @Test
+    void peliculaConAutorVacio() {
+        assertThrows(autorObligatorioException.class, () -> {
+            Pelicula.newPelicula("El rey Leon", "", 120, "20:30", 3, "descripcion");
+        });
+    }
+
     @Test
     void peliculaConDuracionInvalida() {
-        //Arrange + Act
         assertThrows(duracionNegativaException.class, () -> {
             Pelicula.newPelicula("El rey Leon", "Autor", -5, "20:30", 3, "descripcion");
+        });
+    }
+
+    @Test
+    void peliculaConHorarioVacio() {
+        assertThrows(horarioObligatorioException.class, () -> {
+            Pelicula.newPelicula("El rey Leon", "Autor", 120, "", 3,"descripcion");
+        });
+    }
+
+    @Test
+    void peliculaConSalaInvalida() {
+        assertThrows(salaMayorAUnoException.class, () -> {
+            Pelicula.newPelicula("El rey Leon", "Autor", 120, "20:30", 0, "descripcion");
         });
     }
 }
